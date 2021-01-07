@@ -4,7 +4,23 @@
         <meta charset="utf-8"/>
         <script src="main.js"></script>
     </head>
-    <body onload="init();">
-        <canvas id="canvas" width="800" height="400"></canvas>
+    <body onkeydown="eliminate">
+        <div>
+            <div>
+                <canvas id="canvas" width="800" height="400"></canvas>
+            </div>
+            <div>
+                <div>
+                    <label for="participants">Pepuosallistujat:</label>
+                    <textarea id="participants" name="participants"
+                            rows="20" cols="30"
+                    >
+                    </textarea>
+                </div>
+                <div>
+                    <button id="start" onclick="init();">Käynnistä arvonta</button>
+                </div>
+            </div>
+        </div>
     </body>
 </html>

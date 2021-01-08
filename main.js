@@ -6,6 +6,12 @@ const STATE = {
     eliminated: [],
 };
 
+
+// Add a keyboard event handler. Added once, when <body> is loaded
+function addListener() {
+    window.addEventListener('keydown', handleInput);
+}
+
 // Initialize participants to given input, add an event listener for
 // spacebar presses, remove focus from start button and start the animation
 function init() {
@@ -13,7 +19,6 @@ function init() {
         .trim().split('\n');
     STATE.eliminated = [];
 
-    window.addEventListener('keydown', eliminate);
     document.getElementById('start').blur();
     window.requestAnimationFrame(draw);
 }
@@ -75,11 +80,14 @@ function drawEliminated(ctx) {
     ctx.restore();
 }
 
-// Move the participant determined by getCurrentIndex from participants
-// to eliminated, if spacebar was pressed
-function eliminate({ keyCode }) {
-    if (keyCode === 32 && STATE.participants.length > 1) {
+function handleInput({ key }) {
+    // Move the participant determined by getCurrentIndex from participants
+    if (key === "Enter" && STATE.participants.length > 1) {
         STATE.eliminated.push(STATE.participants.splice(getCurrentIndex(), 1));
+    }
+    // (re)start the raffling
+    if (key === "r") {
+        init();
     }
 }
 

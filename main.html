@@ -3,22 +3,33 @@
     <head>
         <meta charset="utf-8"/>
         <script src="main.js"></script>
+        <link href="main.css" rel="stylesheet">
     </head>
-    <body onload="addListener();">
-        <div>
+    <body onload="setup();">
+        <div class="container">
             <div>
                 <canvas id="canvas" width="800" height="400"></canvas>
             </div>
-            <div>
-                <div>
-                    <label for="participants">Pepuosallistujat:</label>
-                    <textarea id="participants" name="participants"
-                            rows="20" cols="30"
-                    >
-                    </textarea>
-                </div>
-                <div>
-                    <button id="start" onclick="init();">Käynnistä arvonta</button>
+            <div class="controls">
+                <label for="participants">Osallistujat</label>
+                <div class="controls-row">
+                    <textarea
+                        class="participants-list"
+                        id="participants"
+                        name="participants"
+                        rows="20"
+                    ></textarea>
+                    <div class="buttons">
+                        <button id="start" onclick="init_draw();">
+                            Käynnistä arvonta
+                        </button>
+                        <button id="eliminate" onclick="eliminate();">
+                            Pudota seuraava
+                        </button>
+                        <button id="clear" onclick="clear_participants();">
+                            Tyhjennä
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

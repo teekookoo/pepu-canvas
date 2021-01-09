@@ -6,17 +6,23 @@ const STATE = {
     eliminated: [],
 };
 
-
-// Add a keyboard event handler. Added once, when <body> is loaded
-function addListener() {
+// Called from <body> onLoad
+function setup() {
     window.addEventListener('keydown', handleInput);
+    document.getElementById('participants').focus();
+    init_draw();
 }
 
 // Initialize participants to given input, add an event listener for
 // spacebar presses, remove focus from start button and start the animation
-function init() {
-    STATE.participants = document.getElementById('participants').value
-        .trim().split('\n');
+function init_draw() {
+    const participants_str =
+          document.getElementById('participants').value.trim();
+    if (participants_str === "") {
+        STATE.participants = [];
+    } else {
+        STATE.participants = participants_str.split('\n');
+    }
     STATE.eliminated = [];
 
     document.getElementById('start').blur();
@@ -29,35 +35,46 @@ function draw() {
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
 
     ctx.save();
+    drawBorders(ctx);
+    if (STATE.participants.length === 0) {
+        drawPlaceholder(ctx);
+        return;
+    }
     drawCurrent(ctx);
-    drawBorder(ctx);
     drawEliminated(ctx);
     ctx.restore();
 
     window.requestAnimationFrame(draw);
 }
 
+// Draw a placeholder when no names have been entered
+function drawPlaceholder(ctx) {
+    writeToTop(ctx, 'Syötä nimet alle ja käynnistä arvonta');
+}
+
 // Draw the current name on top
 // Use green if it's the only one left
 function drawCurrent(ctx) {
     const name = getCurrent();
-    ctx.save();
-    ctx.textAlign = 'center';
-    ctx.font = '24px sans-serif';
-    ctx.translate(WIDTH / 2, 34);
     if (STATE.participants.length === 1) {
-        ctx.fillStyle = 'green';
+        writeToTop(ctx, name, 'green');
+    } else {
+        writeToTop(ctx, name);
     }
-    ctx.fillText(name, 0, 0);
-    ctx.restore();
-
 }
 
 // Draw the border between the current name and the eliminated names
-function drawBorder(ctx) {
+function drawBorders(ctx) {
+    const thickness = 3;
+
     ctx.save();
     ctx.fillStyle = 'black';
-    ctx.fillRect(0, 44, WIDTH, 3);
+    ctx.fillRect(0, 44, WIDTH, thickness);
+
+    ctx.fillRect(0, 0, WIDTH, thickness);
+    ctx.fillRect(0, HEIGHT-thickness, WIDTH, HEIGHT);
+    ctx.fillRect(0, 0, thickness, HEIGHT);
+    ctx.fillRect(WIDTH-thickness, 0, WIDTH, HEIGHT);
     ctx.restore();
 }
 
@@ -80,15 +97,45 @@ function drawEliminated(ctx) {
     ctx.restore();
 }
 
-function handleInput({ key }) {
-    // Move the participant determined by getCurrentIndex from participants
-    if (key === "Enter" && STATE.participants.length > 1) {
-        STATE.eliminated.push(STATE.participants.splice(getCurrentIndex(), 1));
+function writeToTop(ctx, text, style='black') {
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.font = '24px sans-serif';
+    ctx.translate(WIDTH / 2, 34);
+    ctx.fillStyle = style;
+    ctx.fillText(text, 0, 0);
+    ctx.restore();
+}
+
+function handleInput({ key, target }) {
+    switch (target.tagName.toLowerCase()) {
+        case 'textarea':
+        return;
+    }
+    if (key === "Enter") {
+        eliminate();
     }
     // (re)start the raffling
     if (key === "r") {
-        init();
+        init_draw();
     }
+    if (key === "x") {
+        clear_participants();
+    }
+}
+
+// Move the participant determined by getCurrentIndex from participants
+function eliminate() {
+    if (STATE.participants.length > 1) {
+        STATE.eliminated.push(STATE.participants.splice(getCurrentIndex(), 1));
+    }
+}
+
+function clear_participants() {
+    const el = document.getElementById('participants');
+    el.value = "";
+    el.focus();
+    init_draw();
 }
 
 // Return the index of the participant to display on top

@@ -1,0 +1,39 @@
+body {
+    background-color: #efefef;
+    font-family: sans-serif;
+}
+
+.container {
+    width: 800px;
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+}
+
+.controls-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.participants-list {
+    display: flex;
+    flex-direction: column;
+    flex: 3;
+}
+
+.buttons {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+button {
+    width: 100%;
+    flex: 1;
+}
+
+canvas {
+    margin-bottom: 10px;
+}
